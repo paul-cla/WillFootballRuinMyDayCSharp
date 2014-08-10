@@ -27,7 +27,7 @@ namespace WillFootballRuinMyDay
         public sealed class Ids
         {
             
-            public const int codeList = 0x7f040035;
+            public const int fixtureList = 0x7f040035;
             
             public const int airportInfo = 0x7f040036;
         }

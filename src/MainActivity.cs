@@ -1,7 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Android.App;
 using Android.Content;
 using Android.Os;
+using Android.Util;
 using Android.Widget;
 using Dot42.Manifest;
 using Java.Lang;
@@ -15,7 +18,10 @@ namespace WillFootballRuinMyDay
     [Activity]
     public class MainActivity : Activity
     {
-        private ListView fixtureList;
+        private ListView _fixtureList;
+        private readonly List<Fixture> _fixtures = new List<Fixture> { new Fixture(), new Fixture(), new Fixture(), new Fixture(), new Fixture() };
+        private ArrayAdapter<Fixture> _adapter;
+        private Fixture[] _fixturesArray = new Fixture[5];
 
         /// <summary>
         /// Initialize activity
@@ -25,37 +31,30 @@ namespace WillFootballRuinMyDay
             base.OnCreate(savedInstance);
             SetContentView(R.Layouts.MainLayout);
 
-            fixtureList = FindViewById<ListView>(R.Ids.codeList);
-            //fixtureList.Adapter = new ArrayAdapter<CodeAndName>(this, Android.R.Layout.Simple_list_item_1, airports);
-            fixtureList.ItemClick += OnAirportClick;
+            _fixtureList = FindViewById<ListView>(R.Ids.fixtureList);
 
-            // Now get the names of all airports
+            _fixturesArray = _fixtures.ToArray();
+            _adapter = new ArrayAdapter<Fixture>(this, Android.R.Layout.Simple_list_item_1, _fixturesArray);
+            _fixtureList.SetAdapter(_adapter);
+            _fixtureList.ItemClick += OnAirportClick;
+
             var worker = new BackgroundWorker();
             worker.DoWork += OnGetFixtures;
             worker.RunWorkerAsync();
         }
 
-        /// <summary>
-        /// Lookup all airport names
-        /// </summary>
         private void OnGetFixtures(object sender, DoWorkEventArgs doWorkEventArgs)
         {
-            var updater = new ListViewUpdater(fixtureList);
-           
-                try
-                {
-                    var status = FootballService.GetFixtures(66);
-                    if (status != null)
-                    {
-                       // entry.Name = status.Name;
-                        updater.Post();                        
-                    }
-                }
-                catch (Exception ex)
-                {
-                    var a = ex;
-                }
-            
+            var updater = new ListViewUpdater(_fixtureList);
+            var x = FootballService.GetFixtures(66);
+
+            var i = 0;
+            foreach (var fixture in x)
+            {
+                _fixturesArray[i] = fixture;
+                i++;
+            }
+            updater.Post();
         }
 
         /// <summary>
@@ -63,30 +62,9 @@ namespace WillFootballRuinMyDay
         /// </summary>
         private void OnAirportClick(object sender, ItemClickEventArgs e)
         {
-            var intent = new Intent(this, typeof (StatusActivity));
+            var intent = new Intent(this, typeof(StatusActivity));
             //intent.PutExtra("code", airports[e.Position].Code);
             StartActivity(intent);
-        }
-
-        /// <summary>
-        /// Store airport code and (optional name)
-        /// </summary>
-        private class CodeAndName
-        {
-            public readonly string Code;
-            public string Name { get; set; }
-
-            public CodeAndName(string code)
-            {
-                Code = code;
-            }
-
-            public override string ToString()
-            {
-                if (Name != null)
-                    return string.Format("{0} ({1})", Name, Code);
-                return Code;
-            }
         }
 
         /// <summary>
