@@ -5,7 +5,7 @@ using Android.Os;
 using Android.Widget;
 using Dot42.Manifest;
 
-namespace AirportInfo
+namespace WillFootballRuinMyDay
 {
     /// <summary>
     /// View the status of a specific airport.
@@ -44,7 +44,7 @@ namespace AirportInfo
         /// </summary>
         private void OnDoWork(object sender, DoWorkEventArgs e)
         {
-            e.Result = AirportService.GetStatus(code);
+            e.Result = FootballService.GetFixtures(66);
         }
 
         /// <summary>
@@ -63,16 +63,18 @@ namespace AirportInfo
             }
             else
             {
-                var status = (AirportStatus) e.Result;
-                var builder = new StringBuilder();
-                builder.Append(string.Format("Name: {0}\n", status.Name));
-                builder.Append(string.Format("State: {0}\n", status.State));
-                builder.Append(string.Format("City: {0}\n", status.City));
-                builder.Append("\nWeather\n");
-                builder.Append(string.Format("Temp: {0}\n", status.Temperature));
-                builder.Append(string.Format("Wind: {0}\n", status.Wind));
+                //var status = () e.Result;
+                //var builder = new StringBuilder();
+                //builder.Append(string.Format("Name: {0}\n", status.Name));
+                //builder.Append(string.Format("State: {0}\n", status.State));
+                //builder.Append(string.Format("City: {0}\n", status.City));
+                //builder.Append("\nWeather\n");
+                //builder.Append(string.Format("Temp: {0}\n", status.Temperature));
+                //builder.Append(string.Format("Wind: {0}\n", status.Wind));
 
-                info.Text = builder.ToString();
+                //info.Text = builder.ToString();
+
+                info.Text = "info text";
             }
         }
     }
