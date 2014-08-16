@@ -10,7 +10,7 @@ namespace WillFootballRuinMyDay
 
         public override string ToString()
         {
-            if (HomeTeam != null) return Date.ToString("dd/MM/yyyy") + " " + HomeTeam + " v " + AwayTeam;
+            if (!string.IsNullOrEmpty(HomeTeam)) return Date.ToString("dd/MM/yyyy HH:mm") + " v " + AwayTeam;
             return string.Empty;
         }
     }

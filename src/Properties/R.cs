@@ -20,16 +20,12 @@ namespace WillFootballRuinMyDay
         {
             
             public const int MainLayout = 0x7f030000;
-            
-            public const int StatusLayout = 0x7f030001;
         }
         
         public sealed class Ids
         {
             
             public const int fixtureList = 0x7f040035;
-            
-            public const int airportInfo = 0x7f040036;
         }
     }
 }

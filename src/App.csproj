@@ -54,12 +54,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AirportService.cs" />
-    <Compile Include="AirportStatus.cs" />
     <Compile Include="Fixture.cs" />
-    <Compile Include="UpcomingFixtures.cs" />
     <Compile Include="FootballService.cs" />
-    <Compile Include="StatusActivity.cs" />
     <Compile Include="MainActivity.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,9 +64,6 @@
   <Import Project="$(Dot42ExtensionsPath)\Dot42.CSharp.targets" />
   <ItemGroup>
     <Compile Include="$(ResourcesGeneratedCodePath)R.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <LayoutResource Include="StatusLayout.xml" />
   </ItemGroup>
   <ItemGroup>
     <DrawableResource Include="Icons\Icon-hdpi.png" />

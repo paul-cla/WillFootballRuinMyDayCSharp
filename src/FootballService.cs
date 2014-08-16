@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
-using Android.Net.Http;
+using Android.Util;
 using Java.Io;
-using Org.Apache.Http.Client.Methods;
+using Java.Net;
 using Org.Json;
 
 namespace WillFootballRuinMyDay
 {
     public class FootballService
     {
+        private const string Tag = "WillFootballRuinMyDay";
+
         internal static List<Fixture> GetFixtures(int teamId)
         {
             var content = GetUpcomingFixturesForTeam(teamId);
@@ -47,7 +48,7 @@ namespace WillFootballRuinMyDay
             utcDate = utcDate.Replace("Z", "");
 
             var date = utcDate.Substring(0, utcDate.IndexOf('T')).Split("-");
-            var time = utcDate.Substring(utcDate.IndexOf('T')+1).Split(":");
+            var time = utcDate.Substring(utcDate.IndexOf('T') + 1).Split(":");
 
             return new DateTime(Convert.ToInt16(date[0]),
                 Convert.ToInt16(date[1]),
@@ -62,14 +63,13 @@ namespace WillFootballRuinMyDay
         /// </summary>
         private static string GetUpcomingFixturesForTeam(int teamId)
         {
-            var uri = string.Format("http://www.football-data.org/team/{0}/fixtures/upcoming", teamId);
-            var client = AndroidHttpClient.NewInstance("WillFootballRuinMyDay");
-            var request = new HttpGet(uri);
+            var url = new URL(string.Format("http://www.football-data.org/team/{0}/fixtures/upcoming", teamId));
+            var urlConnection = (HttpURLConnection)url.OpenConnection();
             try
             {
-                var response = client.Execute(request);
-                var content = response.GetEntity().GetContent();
-                var reader = new BufferedReader(new InputStreamReader(content));
+                urlConnection.AddRequestProperty("Cache-Control", "max-stale=" + 604800); //1 week
+                urlConnection.SetUseCaches(true); 
+                var reader = new BufferedReader(new InputStreamReader(urlConnection.GetInputStream()));
                 var builder = new StringBuilder();
                 string line;
                 while ((line = reader.ReadLine()) != null)
@@ -78,8 +78,9 @@ namespace WillFootballRuinMyDay
                 }
                 return builder.ToString();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.I(Tag, "HTTP response cache installation failed:" + ex);
                 return null;
             }
         }
