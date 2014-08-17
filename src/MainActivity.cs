@@ -143,11 +143,15 @@ namespace WillFootballRuinMyDay
             {
                 var bigText = new Notification.BigTextStyle();
                 bigText.BigText(fixture.HomeTeam + " v " + fixture.AwayTeam);
-                bigText.SetBigContentTitle("Football today at " + fixture.Date.ToString("HH:mm"));
+
+                var footballTodayMessage = "Football today at " + fixture.Date.ToString("HH:mm");
+
+                bigText.SetBigContentTitle(footballTodayMessage);
                 
                 var notification = new Notification.Builder(this)
                     .SetSmallIcon(R.Drawables.Icon)
                     .SetStyle(bigText)
+                    .SetTicker(footballTodayMessage)
                     .Build();
 
                 notificationManager.Notify(1, notification);
