@@ -124,19 +124,54 @@ namespace WillFootballRuinMyDay
             var updater = new ListViewUpdater(_fixtureList);
             var fixtures = FootballService.GetFixtures(TeamId, forceRefresh);
 
-            var i = 0;
+
             if (fixtures != null)
             {
-                foreach (var fixture in fixtures)
-                {
-                    if (fixture.HomeTeam == TeamName)
-                    {
-                        _fixturesArray[i] = fixture;
-                        i++;
-                    }
-                }
+                fixtures = LimitToHomeTeam(fixtures);
+                DisplayNotificationIfFirstGameIsToday(fixtures);
             }
             updater.Post();
+        }
+
+        private void DisplayNotificationIfFirstGameIsToday(IList<Fixture> fixtures)
+        {
+            var today = new DateTime(2014, 9, 14);
+            var fixture = fixtures[0];
+            var notificationManager = (NotificationManager)GetSystemService(NOTIFICATION_SERVICE);
+
+            if (fixture.Date.Date == today.Date)
+            {
+                var bigText = new Notification.BigTextStyle();
+                bigText.BigText(fixture.HomeTeam + " v " + fixture.AwayTeam);
+                bigText.SetBigContentTitle("Football today at " + fixture.Date.ToString("HH:mm"));
+                
+                var notification = new Notification.Builder(this)
+                    .SetSmallIcon(R.Drawables.Icon)
+                    .SetStyle(bigText)
+                    .Build();
+
+                notificationManager.Notify(1, notification);
+            }
+            else
+            {
+                notificationManager.CancelAll();
+            }
+        }
+
+        private List<Fixture> LimitToHomeTeam(IEnumerable<Fixture> fixtures)
+        {
+            var newFixtures = new List<Fixture>();
+            var i = 0;
+            foreach (var fixture in fixtures)
+            {
+                if (fixture.HomeTeam == TeamName)
+                {
+                    _fixturesArray[i] = fixture;
+                    newFixtures.Add(fixture);
+                    i++;
+                }
+            }
+            return newFixtures;
         }
 
         protected new void OnPause()
