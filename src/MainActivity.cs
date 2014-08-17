@@ -31,9 +31,6 @@ namespace WillFootballRuinMyDay
         private const string TeamName = "Manchester United FC";
         private const int TeamId = 66;
 
-        private static bool _shownConnectionBox;
-
-
         /// <summary>
         /// Inflate the menu resource into the given menu.
         /// </summary>
@@ -76,65 +73,36 @@ namespace WillFootballRuinMyDay
                 Log.E(Tag, "HTTP response cache installation failed. " + ex.Message + " " + ex.StackTrace);
             }
 
-           // if (IsNetworkConnected())
-           // {
-                SetContentView(R.Layouts.MainLayout);
-                _fixtureList = FindViewById<ListView>(R.Ids.fixtureList);
+            SetContentView(R.Layouts.MainLayout);
+            _fixtureList = FindViewById<ListView>(R.Ids.fixtureList);
 
-                _fixturesArray = _fixtures.ToArray();
-                _adapter = new ArrayAdapter<Fixture>(this, Android.R.Layout.Simple_list_item_1, _fixturesArray);
-                _fixtureList.SetAdapter(_adapter);
+            _fixturesArray = _fixtures.ToArray();
+            _adapter = new ArrayAdapter<Fixture>(this, Android.R.Layout.Simple_list_item_1, _fixturesArray);
+            _fixtureList.SetAdapter(_adapter);
 
-                GetFixturesAsync();
-            // }
-            //else
-            //{
-            //    ShowNoConnectionDialog(this);
-            //}
+            GetFixturesAsync();
 
-                var cache = HttpResponseCache.GetInstalled();
+
+            var cache = HttpResponseCache.GetInstalled();
             Log.I(Tag, "Hit" + cache.GetHitCount().ToString());
-            Log.I(Tag, "Network" +cache.GetNetworkCount().ToString());
+            Log.I(Tag, "Network" + cache.GetNetworkCount().ToString());
             Log.I(Tag, "Request" + cache.GetRequestCount().ToString());
 
         }
 
         private void GetFixturesAsync(bool forceRefresh = false)
         {
+            if (!IsNetworkConnected())
+            {
+                WirelessConnectivity.ShowNoConnectionToast(this);
+            }
             var worker = new BackgroundWorker();
             worker.DoWork += (o, args) => OnGetFixtures(o, args, forceRefresh);
             worker.RunWorkerAsync();
         }
 
-        private static void ShowNoConnectionDialog(Context ctx1)
-        {
-            if (!_shownConnectionBox)
-            {
-                var ctx = ctx1;
-                var builder = new AlertDialog.Builder(ctx);
-                builder.SetCancelable(true);
-                builder.SetMessage("No connection");
-                builder.SetTitle("No connection");
-                builder.SetPositiveButton("OK",
-                                          (sender, dialogInterfaceClickEventArgs) => DoNoConnectionPositiveClick(ctx));
-                builder.SetNegativeButton("Cancel",
-                                          (sender, dialogInterfaceClickEventArgs) => DoNoConnectionNegativeClick());
-                builder.Show();
-            }
-        }
 
-
-        private static void DoNoConnectionPositiveClick(Context ctx)
-        {
-            ctx.StartActivity(new Intent(Android.Provider.Settings.ACTION_WIRELESS_SETTINGS));
-        }
-
-        private static void DoNoConnectionNegativeClick()
-        {
-            _shownConnectionBox = true;
-        }
-
-        private bool IsNetworkConnected()
+        public bool IsNetworkConnected()
         {
             var cm = (ConnectivityManager)GetSystemService(CONNECTIVITY_SERVICE);
             NetworkInfo ni;

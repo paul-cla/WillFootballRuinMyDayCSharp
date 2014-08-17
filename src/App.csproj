@@ -60,6 +60,7 @@
     <Compile Include="FootballService.cs" />
     <Compile Include="ListViewUpdater.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="WirelessConnectivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <LayoutResource Include="MainLayout.xml" />
