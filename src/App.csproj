@@ -54,8 +54,11 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="DateHelper.cs" />
     <Compile Include="Fixture.cs" />
     <Compile Include="FootballService.cs" />
+    <Compile Include="ListViewUpdater.cs" />
     <Compile Include="MainActivity.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +72,15 @@
     <DrawableResource Include="Icons\Icon-hdpi.png" />
     <DrawableResource Include="Icons\Icon-ldpi.png" />
     <DrawableResource Include="Icons\Icon-mdpi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <MenuResource Include="Menu.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <DrawableResource Include="Icons\refresh-hdpi.png" />
+    <DrawableResource Include="Icons\refresh-mdpi.png" />
+    <DrawableResource Include="Icons\refresh-xhdpi.png" />
+    <DrawableResource Include="Icons\refresh-xxhdpi.png" />
   </ItemGroup>
   <Target Name="BeforeBuild">
   </Target>

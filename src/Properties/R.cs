@@ -14,6 +14,8 @@ namespace WillFootballRuinMyDay
         {
             
             public const int Icon = 0x7f020000;
+            
+            public const int refresh = 0x7f020001;
         }
         
         public sealed class Layouts
@@ -26,6 +28,14 @@ namespace WillFootballRuinMyDay
         {
             
             public const int fixtureList = 0x7f040035;
+            
+            public const int Refresh = 0x7f040036;
+        }
+        
+        public sealed class Menus
+        {
+            
+            public const int Menu = 0x7f050000;
         }
     }
 }

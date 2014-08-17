@@ -10,11 +10,9 @@ namespace WillFootballRuinMyDay
 {
     public class FootballService
     {
-        private const string Tag = "WillFootballRuinMyDay";
-
-        internal static List<Fixture> GetFixtures(int teamId)
+        internal static List<Fixture> GetFixtures(int teamId, bool forceRefresh = false)
         {
-            var content = GetUpcomingFixturesForTeam(teamId);
+            var content = GetUpcomingFixturesForTeam(teamId, forceRefresh);
             if (content == null) return null;
             var jsonArray = new JSONArray(content);
             return ConvertJsonArrayToFixtureList(jsonArray);
@@ -35,40 +33,29 @@ namespace WillFootballRuinMyDay
                     {
                         AwayTeam = jsonObject.GetString("awayTeam"),
                         HomeTeam = jsonObject.GetString("homeTeam"),
-                        Date = ParseUtcDate(jsonObject.GetString("date"))
+                        Date = DateHelper.ParseUtcDate(jsonObject.GetString("date"))
                     };
                 list.Add(fixture);
             }
             return list;
         }
 
-        private static DateTime ParseUtcDate(string utcDate)
-        {
-            //convert 2014-08-16T11:45:00Z format into DateTime. Dot42 seems to struggle.
-            utcDate = utcDate.Replace("Z", "");
-
-            var date = utcDate.Substring(0, utcDate.IndexOf('T')).Split("-");
-            var time = utcDate.Substring(utcDate.IndexOf('T') + 1).Split(":");
-
-            return new DateTime(Convert.ToInt16(date[0]),
-                Convert.ToInt16(date[1]),
-                Convert.ToInt16(date[2]),
-                Convert.ToInt16(time[0]),
-                Convert.ToInt16(time[1]),
-                Convert.ToInt16(time[2]));
-        }
-
-        /// <summary>
-        /// Perform the low level request and return the resulting content.
-        /// </summary>
-        private static string GetUpcomingFixturesForTeam(int teamId)
+        private static string GetUpcomingFixturesForTeam(int teamId, bool forceRefresh = false)
         {
             var url = new URL(string.Format("http://www.football-data.org/team/{0}/fixtures/upcoming", teamId));
             var urlConnection = (HttpURLConnection)url.OpenConnection();
             try
             {
-                urlConnection.AddRequestProperty("Cache-Control", "max-stale=" + 604800); //1 week
-                urlConnection.SetUseCaches(true); 
+                if (forceRefresh)
+                {
+                    urlConnection.AddRequestProperty("Cache-Control", "no-cache");
+                }
+                else
+                {
+                    urlConnection.AddRequestProperty("Cache-Control", "max-stale=" + 86400); //1 day
+                }
+
+                urlConnection.SetUseCaches(true);
                 var reader = new BufferedReader(new InputStreamReader(urlConnection.GetInputStream()));
                 var builder = new StringBuilder();
                 string line;
@@ -80,7 +67,7 @@ namespace WillFootballRuinMyDay
             }
             catch (Exception ex)
             {
-                Log.I(Tag, "HTTP response cache installation failed:" + ex);
+                Log.I(Constants.Tag, "Error getting fixtures. " + ex.Message + " " + ex.StackTrace);
                 return null;
             }
         }

@@ -11,7 +11,6 @@ using Android.Util;
 using Android.View;
 using Android.Widget;
 using Dot42.Manifest;
-using Java.Lang;
 using Exception = System.Exception;
 
 [assembly: Application("Will Football Ruin My Day?", Icon = "Icon")]
@@ -36,6 +35,30 @@ namespace WillFootballRuinMyDay
 
 
         /// <summary>
+        /// Inflate the menu resource into the given menu.
+        /// </summary>
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(R.Menus.Menu, menu);
+            return true;
+        }
+
+        /// <summary>
+        /// Menu option has been clicked.
+        /// </summary>
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            switch (item.GetItemId())
+            {
+                case R.Ids.Refresh:
+                    GetFixturesAsync(true);
+                    break;
+
+            }
+            return base.OnOptionsItemSelected(item);
+        }
+
+        /// <summary>
         /// Initialize activity
         /// </summary>
         protected override void OnCreate(Bundle savedInstance)
@@ -50,7 +73,7 @@ namespace WillFootballRuinMyDay
             }
             catch (IOException ex)
             {
-                Log.E(Tag, "HTTP response cache installation failed:" + ex);
+                Log.E(Tag, "HTTP response cache installation failed. " + ex.Message + " " + ex.StackTrace);
             }
 
            // if (IsNetworkConnected())
@@ -62,14 +85,25 @@ namespace WillFootballRuinMyDay
                 _adapter = new ArrayAdapter<Fixture>(this, Android.R.Layout.Simple_list_item_1, _fixturesArray);
                 _fixtureList.SetAdapter(_adapter);
 
-                var worker = new BackgroundWorker();
-                worker.DoWork += OnGetFixtures;
-                worker.RunWorkerAsync();
-           // }
+                GetFixturesAsync();
+            // }
             //else
             //{
             //    ShowNoConnectionDialog(this);
             //}
+
+                var cache = HttpResponseCache.GetInstalled();
+            Log.I(Tag, "Hit" + cache.GetHitCount().ToString());
+            Log.I(Tag, "Network" +cache.GetNetworkCount().ToString());
+            Log.I(Tag, "Request" + cache.GetRequestCount().ToString());
+
+        }
+
+        private void GetFixturesAsync(bool forceRefresh = false)
+        {
+            var worker = new BackgroundWorker();
+            worker.DoWork += (o, args) => OnGetFixtures(o, args, forceRefresh);
+            worker.RunWorkerAsync();
         }
 
         private static void ShowNoConnectionDialog(Context ctx1)
@@ -117,18 +151,21 @@ namespace WillFootballRuinMyDay
             return ni != null;
         }
 
-        private void OnGetFixtures(object sender, DoWorkEventArgs doWorkEventArgs)
+        private void OnGetFixtures(object sender, DoWorkEventArgs doWorkEventArgs, bool forceRefresh = false)
         {
             var updater = new ListViewUpdater(_fixtureList);
-            var fixtures = FootballService.GetFixtures(TeamId);
+            var fixtures = FootballService.GetFixtures(TeamId, forceRefresh);
 
             var i = 0;
-            foreach (var fixture in fixtures)
+            if (fixtures != null)
             {
-                if (fixture.HomeTeam == TeamName)
+                foreach (var fixture in fixtures)
                 {
-                    _fixturesArray[i] = fixture;
-                    i++;
+                    if (fixture.HomeTeam == TeamName)
+                    {
+                        _fixturesArray[i] = fixture;
+                        i++;
+                    }
                 }
             }
             updater.Post();
@@ -141,35 +178,6 @@ namespace WillFootballRuinMyDay
             if (cache != null)
             {
                 cache.Flush();
-            }
-        }
-
-        /// <summary>
-        /// Helper used to update the listview.
-        /// </summary>
-        private class ListViewUpdater : IRunnable
-        {
-            private readonly ListView listView;
-
-            public ListViewUpdater(ListView listView)
-            {
-                this.listView = listView;
-            }
-
-            /// <summary>
-            /// Post an update request
-            /// </summary>
-            public void Post()
-            {
-                listView.Post(this);
-            }
-
-            /// <summary>
-            /// Update now
-            /// </summary>
-            public void Run()
-            {
-                listView.InvalidateViews();
             }
         }
     }
