@@ -7,18 +7,18 @@ namespace WillFootballRuinMyDay
 {
     public class Notifications
     {
-        private MainActivity _mainActivity;
+        private Context _context;
 
-        public Notifications(MainActivity mainActivity)
+        public Notifications(Context context)
         {
-            _mainActivity = mainActivity;
+            _context = context;
         }
 
-        public void DisplayNotificationIfFirstGameIsToday(IList<Fixture> fixtures)
+        public void DisplayNotificationIfNextGameIsToday(IList<Fixture> fixtures)
         {
             var now = new DateTime(2014, 9, 14, 15, 00, 00);
             var fixture = fixtures[0];
-            var notificationManager = (NotificationManager) _mainActivity.GetSystemService(Context.NOTIFICATION_SERVICE);
+            var notificationManager = (NotificationManager)_context.GetSystemService(Context.NOTIFICATION_SERVICE);
 
             if (fixture.Date.Date == now.Date && now <= fixture.Date)
             {
@@ -29,7 +29,7 @@ namespace WillFootballRuinMyDay
 
                 bigText.SetBigContentTitle(footballTodayMessage);
                 
-                var notification = new Notification.Builder(_mainActivity)
+                var notification = new Notification.Builder(_context)
                     .SetSmallIcon(R.Drawables.Icon)
                     .SetStyle(bigText)
                     .SetTicker(footballTodayMessage)

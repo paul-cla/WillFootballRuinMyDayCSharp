@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Android.App;
 using Android.Content;
 using Android.Util;
@@ -7,24 +8,31 @@ using Dot42.Manifest;
 namespace WillFootballRuinMyDay
 {
     [Receiver(Process = ":remote")]
-    public class FixtureTodayAlarmReceiver : BroadcastReceiver 
+    public class FixtureTodayAlarmReceiver : BroadcastReceiver
     {
+        private const string TeamName = "Manchester United FC";
+        private const int TeamId = 66;
 
         public override void OnReceive(Context context, Intent intent)
         {
-            var notificationManager = (NotificationManager)context.GetSystemService(Context.NOTIFICATION_SERVICE);
-            // Set the icon, scrolling text and timestamp
-            var notification = new Notification(R.Drawables.Icon, "Test Alarm", Environment.TickCount);
+            var worker = new BackgroundWorker();
+            worker.DoWork += (o, args) => OnGetFixtures(o, args, context);
+            worker.RunWorkerAsync();
+        }
 
-            // The PendingIntent to launch our activity if the user selects this notification
-            var contentIntent = PendingIntent.GetActivity(context, 0, new Intent(context, typeof (MainActivity)), 0);
-            
-            // Set the info for the views that show in the notification panel.
-            notification.SetLatestEventInfo(context, "something", "This is a Test Alarm", contentIntent);
-            
-            // Send the notification.
-            // We use a layout id because it is a unique number. We use it later to cancel.
-            notificationManager.Notify(1, notification);
+        // ReSharper disable UnusedParameter.Local
+        private static void OnGetFixtures(object sender, DoWorkEventArgs doWorkEventArgs, Context context)
+        // ReSharper restore UnusedParameter.Local
+        {
+            var fixtures = FootballService.GetFixtures(TeamId);
+
+            if (fixtures == null) return;
+
+            var fixtureHelpers = new FixtureHelpers();
+            fixtures = fixtureHelpers.LimitToHomeTeam(fixtures, TeamName);
+
+            var notifications = new Notifications(context);
+            notifications.DisplayNotificationIfNextGameIsToday(fixtures);
         }
     }
 }

@@ -22,14 +22,16 @@ namespace WillFootballRuinMyDay
     {
         private const string Tag = "WillFootballRuinMyDay";
         private ListView _fixtureList;
-        private readonly List<Fixture> _fixtures = new List<Fixture> { new Fixture(), new Fixture(), new Fixture(), new Fixture(), new Fixture() };
+        private List<Fixture> _fixtures = new List<Fixture> { new Fixture(), new Fixture(), new Fixture(), new Fixture(), new Fixture() };
         private ArrayAdapter<Fixture> _adapter;
         private Fixture[] _fixturesArray = new Fixture[5];
         private readonly Notifications _notifications;
+        private readonly FixtureHelpers _fixtureHelpers;
 
         public MainActivity()
         {
             _notifications = new Notifications(this);
+            _fixtureHelpers = new FixtureHelpers();
         }
 
         private const string TeamName = "Manchester United FC";
@@ -127,28 +129,16 @@ namespace WillFootballRuinMyDay
 
             if (fixtures != null)
             {
-                fixtures = LimitToHomeTeam(fixtures);
-                _notifications.DisplayNotificationIfFirstGameIsToday(fixtures);
+                fixtures = _fixtureHelpers.LimitToHomeTeam(fixtures, TeamName);
+                for(var i=0; i<fixtures.Count; i++)
+                {
+                    _fixturesArray[i] = fixtures[i];
+                }
+                _notifications.DisplayNotificationIfNextGameIsToday(fixtures);
                 var alarm = new FixtureAlarmService(this);
                 alarm.StartFixtureCheckAlarm();
             }
             updater.Post();
-        }
-
-        private List<Fixture> LimitToHomeTeam(IEnumerable<Fixture> fixtures)
-        {
-            var newFixtures = new List<Fixture>();
-            var i = 0;
-            foreach (var fixture in fixtures)
-            {
-                if (fixture.HomeTeam == TeamName)
-                {
-                    _fixturesArray[i] = fixture;
-                    newFixtures.Add(fixture);
-                    i++;
-                }
-            }
-            return newFixtures;
         }
 
         protected new void OnPause()
