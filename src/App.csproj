@@ -12,7 +12,7 @@
     <RootNamespace>WillFootballRuinMyDay</RootNamespace>
     <AssemblyName>WillFootballRuinMyDay</AssemblyName>
     <TargetFrameworkIdentifier>Android</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.1</TargetFrameworkVersion>
     <AndroidVersion>$(TargetFrameworkVersion)</AndroidVersion>
     <SupportedCultures>
     </SupportedCultures>
@@ -54,12 +54,15 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FixtureTodayAlarmReceiver.cs" />
+    <Compile Include="FixtureAlarmService.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DateHelper.cs" />
     <Compile Include="Fixture.cs" />
     <Compile Include="FootballService.cs" />
     <Compile Include="ListViewUpdater.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Notifications.cs" />
     <Compile Include="WirelessConnectivity.cs" />
   </ItemGroup>
   <ItemGroup>

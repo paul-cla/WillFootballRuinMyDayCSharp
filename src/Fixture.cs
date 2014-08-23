@@ -2,7 +2,7 @@
 
 namespace WillFootballRuinMyDay
 {
-    internal class Fixture
+    public class Fixture
     {
         public DateTime Date { get; set; }
         public string HomeTeam { get; set; }

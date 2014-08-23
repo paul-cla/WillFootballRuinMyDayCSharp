@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using Android.App;
-using Android.Content;
 using Android.Net;
 using Android.Net.Http;
 using Android.Os;
@@ -16,7 +15,6 @@ using Exception = System.Exception;
 [assembly: Application("Will Football Ruin My Day?", Icon = "Icon")]
 [assembly: UsesPermission(Android.Manifest.Permission.INTERNET)]
 [assembly: UsesPermission(Android.Manifest.Permission.ACCESS_NETWORK_STATE)]
-
 namespace WillFootballRuinMyDay
 {
     [Activity]
@@ -27,6 +25,12 @@ namespace WillFootballRuinMyDay
         private readonly List<Fixture> _fixtures = new List<Fixture> { new Fixture(), new Fixture(), new Fixture(), new Fixture(), new Fixture() };
         private ArrayAdapter<Fixture> _adapter;
         private Fixture[] _fixturesArray = new Fixture[5];
+        private readonly Notifications _notifications;
+
+        public MainActivity()
+        {
+            _notifications = new Notifications(this);
+        }
 
         private const string TeamName = "Manchester United FC";
         private const int TeamId = 66;
@@ -82,11 +86,7 @@ namespace WillFootballRuinMyDay
 
             GetFixturesAsync();
 
-
-            var cache = HttpResponseCache.GetInstalled();
-            Log.I(Tag, "Hit" + cache.GetHitCount().ToString());
-            Log.I(Tag, "Network" + cache.GetNetworkCount().ToString());
-            Log.I(Tag, "Request" + cache.GetRequestCount().ToString());
+            
 
         }
 
@@ -128,38 +128,11 @@ namespace WillFootballRuinMyDay
             if (fixtures != null)
             {
                 fixtures = LimitToHomeTeam(fixtures);
-                DisplayNotificationIfFirstGameIsToday(fixtures);
+                _notifications.DisplayNotificationIfFirstGameIsToday(fixtures);
+                var alarm = new FixtureAlarmService(this);
+                alarm.StartFixtureCheckAlarm();
             }
             updater.Post();
-        }
-
-        private void DisplayNotificationIfFirstGameIsToday(IList<Fixture> fixtures)
-        {
-            var today = new DateTime(2014, 9, 14);
-            var fixture = fixtures[0];
-            var notificationManager = (NotificationManager)GetSystemService(NOTIFICATION_SERVICE);
-
-            if (fixture.Date.Date == today.Date)
-            {
-                var bigText = new Notification.BigTextStyle();
-                bigText.BigText(fixture.HomeTeam + " v " + fixture.AwayTeam);
-
-                var footballTodayMessage = "Football today at " + fixture.Date.ToString("HH:mm");
-
-                bigText.SetBigContentTitle(footballTodayMessage);
-                
-                var notification = new Notification.Builder(this)
-                    .SetSmallIcon(R.Drawables.Icon)
-                    .SetStyle(bigText)
-                    .SetTicker(footballTodayMessage)
-                    .Build();
-
-                notificationManager.Notify(1, notification);
-            }
-            else
-            {
-                notificationManager.CancelAll();
-            }
         }
 
         private List<Fixture> LimitToHomeTeam(IEnumerable<Fixture> fixtures)
