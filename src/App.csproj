@@ -54,6 +54,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="FixtureHelpers.cs" />
     <Compile Include="FixtureTodayAlarmReceiver.cs" />
     <Compile Include="FixtureAlarmService.cs" />

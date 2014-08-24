@@ -1,6 +1,6 @@
-﻿using Android.App;
+﻿using System;
+using Android.App;
 using Android.Content;
-using Android.Os;
 using Java.Util;
 
 namespace WillFootballRuinMyDay
@@ -19,14 +19,14 @@ namespace WillFootballRuinMyDay
 
         public void StartFixtureCheckAlarm()
         {
-            
-            var calendar = Calendar.GetInstance();
-
-            calendar.Add(Calendar.SECOND, 10);
-
             var alarmManager = (AlarmManager)_context.GetSystemService(Context.ALARM_SERVICE);
 
-            alarmManager.SetInexactRepeating(AlarmManager.ELAPSED_REALTIME, 10000, 10000, _mAlarmSender);
+            // Set the alarm to start at approximately 10:00 a.m.
+            var calendar = Calendar.GetInstance();
+            calendar.SetTimeInMillis(DateTime.Now.CurrentTimeMillis());
+            calendar.Set(Calendar.HOUR_OF_DAY, 10);
+
+            alarmManager.SetInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.GetTimeInMillis(), AlarmManager.INTERVAL_DAY, _mAlarmSender);
 
         }
     }

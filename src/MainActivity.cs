@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using Android.App;
@@ -22,7 +21,7 @@ namespace WillFootballRuinMyDay
     {
         private const string Tag = "WillFootballRuinMyDay";
         private ListView _fixtureList;
-        private List<Fixture> _fixtures = new List<Fixture> { new Fixture(), new Fixture(), new Fixture(), new Fixture(), new Fixture() };
+        private readonly List<Fixture> _fixtures = new List<Fixture> { new Fixture(), new Fixture(), new Fixture(), new Fixture(), new Fixture() };
         private ArrayAdapter<Fixture> _adapter;
         private Fixture[] _fixturesArray = new Fixture[5];
         private readonly Notifications _notifications;
@@ -88,7 +87,7 @@ namespace WillFootballRuinMyDay
 
             GetFixturesAsync();
 
-            
+
 
         }
 
@@ -121,7 +120,9 @@ namespace WillFootballRuinMyDay
             return ni != null;
         }
 
+        // ReSharper disable UnusedParameter.Local
         private void OnGetFixtures(object sender, DoWorkEventArgs doWorkEventArgs, bool forceRefresh = false)
+        // ReSharper restore UnusedParameter.Local
         {
             var updater = new ListViewUpdater(_fixtureList);
             var fixtures = FootballService.GetFixtures(TeamId, forceRefresh);
@@ -130,7 +131,7 @@ namespace WillFootballRuinMyDay
             if (fixtures != null)
             {
                 fixtures = _fixtureHelpers.LimitToHomeTeam(fixtures, TeamName);
-                for(var i=0; i<fixtures.Count; i++)
+                for (var i = 0; i < fixtures.Count; i++)
                 {
                     _fixturesArray[i] = fixtures[i];
                 }

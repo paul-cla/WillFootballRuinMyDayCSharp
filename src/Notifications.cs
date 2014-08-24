@@ -7,7 +7,7 @@ namespace WillFootballRuinMyDay
 {
     public class Notifications
     {
-        private Context _context;
+        private readonly Context _context;
 
         public Notifications(Context context)
         {
@@ -17,6 +17,7 @@ namespace WillFootballRuinMyDay
         public void DisplayNotificationIfNextGameIsToday(IList<Fixture> fixtures)
         {
             var now = new DateTime(2014, 9, 14, 15, 00, 00);
+            //var now = DateTime.Now;
             var fixture = fixtures[0];
             var notificationManager = (NotificationManager)_context.GetSystemService(Context.NOTIFICATION_SERVICE);
 
