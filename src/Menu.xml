@@ -1,4 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:title="Refresh" android:icon="@drawable/refresh" android:showAsAction="always" android:id="@+id/Refresh" />
-  <item android:title="Settings" android:showAsAction="never" />
+  <item android:title="Settings" android:showAsAction="never" android:id="@+id/Settings" />
 </menu>

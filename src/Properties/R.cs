@@ -24,18 +24,26 @@ namespace WillFootballRuinMyDay
             public const int MainLayout = 0x7f030000;
         }
         
+        public sealed class Xmls
+        {
+            
+            public const int Preferences = 0x7f040000;
+        }
+        
         public sealed class Ids
         {
             
-            public const int fixtureList = 0x7f040035;
+            public const int fixtureList = 0x7f050035;
             
-            public const int Refresh = 0x7f040036;
+            public const int Refresh = 0x7f050036;
+            
+            public const int Settings = 0x7f050037;
         }
         
         public sealed class Menus
         {
             
-            public const int Menu = 0x7f050000;
+            public const int Menu = 0x7f060000;
         }
     }
 }

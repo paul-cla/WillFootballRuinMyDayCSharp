@@ -64,6 +64,7 @@
     <Compile Include="ListViewUpdater.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Notifications.cs" />
+    <Compile Include="SettingsActivity.cs" />
     <Compile Include="WirelessConnectivity.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +89,9 @@
     <DrawableResource Include="Icons\refresh-mdpi.png" />
     <DrawableResource Include="Icons\refresh-xhdpi.png" />
     <DrawableResource Include="Icons\refresh-xxhdpi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <XmlResource Include="Preferences.xml" />
   </ItemGroup>
   <Target Name="BeforeBuild">
   </Target>

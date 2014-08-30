@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using Android.App;
+using Android.Content;
 using Android.Net;
 using Android.Net.Http;
 using Android.Os;
@@ -52,9 +53,17 @@ namespace WillFootballRuinMyDay
                 case R.Ids.Refresh:
                     GetFixturesAsync(true);
                     break;
-
+                case R.Ids.Settings:
+                    ShowSettings();
+                    break;
             }
             return base.OnOptionsItemSelected(item);
+        }
+
+        private void ShowSettings()
+        {
+            var intent = new Intent(this, typeof(SettingsActivity));
+            StartActivity(intent);
         }
 
         /// <summary>
