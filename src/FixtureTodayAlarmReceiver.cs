@@ -10,7 +10,6 @@ namespace WillFootballRuinMyDay
     [Receiver(Process = ":remote")]
     public class FixtureTodayAlarmReceiver : BroadcastReceiver
     {
-        private const string TeamName = "Manchester United FC";
         private const int TeamId = 66;
 
         public override void OnReceive(Context context, Intent intent)
@@ -27,9 +26,6 @@ namespace WillFootballRuinMyDay
             var fixtures = FootballService.GetFixtures(TeamId);
 
             if (fixtures == null) return;
-
-            var fixtureHelpers = new FixtureHelpers();
-            fixtures = fixtureHelpers.LimitToHomeTeam(fixtures, TeamName);
 
             var notifications = new Notifications(context);
             notifications.DisplayNotificationIfNextGameIsToday(fixtures);

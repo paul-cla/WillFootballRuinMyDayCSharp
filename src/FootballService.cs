@@ -42,7 +42,7 @@ namespace WillFootballRuinMyDay
 
         private static string GetUpcomingFixturesForTeam(int teamId, bool forceRefresh = false)
         {
-            var url = new URL(string.Format("http://www.football-data.org/team/{0}/fixtures/upcoming", teamId));
+            var url = new URL(string.Format("http://www.football-data.org/team/{0}/fixtures/upcoming?venue=home", teamId));
             var urlConnection = (HttpURLConnection)url.OpenConnection();
             try
             {

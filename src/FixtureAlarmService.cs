@@ -8,13 +8,13 @@ namespace WillFootballRuinMyDay
     public class FixtureAlarmService
     {
         private readonly Context _context;
-        private readonly PendingIntent _mAlarmSender; 
+        private readonly PendingIntent _pendingIntent; 
         
         public FixtureAlarmService(Context context)
         {
             _context = context;
             var intent = new Intent(_context, typeof(FixtureTodayAlarmReceiver));
-            _mAlarmSender = PendingIntent.GetBroadcast(context, 0, intent, 0);
+            _pendingIntent = PendingIntent.GetBroadcast(context, 0, intent, 0);
         }
 
         public void StartFixtureCheckAlarm()
@@ -26,7 +26,7 @@ namespace WillFootballRuinMyDay
             calendar.SetTimeInMillis(DateTime.Now.CurrentTimeMillis());
             calendar.Set(Calendar.HOUR_OF_DAY, 10);
 
-            alarmManager.SetInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.GetTimeInMillis(), AlarmManager.INTERVAL_DAY, _mAlarmSender);
+            alarmManager.SetInexactRepeating(AlarmManager.RTC, calendar.GetTimeInMillis(), AlarmManager.INTERVAL_DAY, _pendingIntent);
 
         }
     }

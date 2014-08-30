@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DateTimeExtensions.cs" />
-    <Compile Include="FixtureHelpers.cs" />
     <Compile Include="FixtureTodayAlarmReceiver.cs" />
     <Compile Include="FixtureAlarmService.cs" />
     <Compile Include="Constants.cs" />
@@ -68,7 +67,9 @@
     <Compile Include="WirelessConnectivity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <LayoutResource Include="MainLayout.xml" />
+    <LayoutResource Include="MainLayout.xml">
+      <SubType>Designer</SubType>
+    </LayoutResource>
   </ItemGroup>
   <Import Project="$(Dot42ExtensionsPath)\Dot42.CSharp.targets" />
   <ItemGroup>

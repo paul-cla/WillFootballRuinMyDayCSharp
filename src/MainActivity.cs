@@ -25,15 +25,12 @@ namespace WillFootballRuinMyDay
         private ArrayAdapter<Fixture> _adapter;
         private Fixture[] _fixturesArray = new Fixture[5];
         private readonly Notifications _notifications;
-        private readonly FixtureHelpers _fixtureHelpers;
 
         public MainActivity()
         {
             _notifications = new Notifications(this);
-            _fixtureHelpers = new FixtureHelpers();
         }
 
-        private const string TeamName = "Manchester United FC";
         private const int TeamId = 66;
 
         /// <summary>
@@ -130,7 +127,6 @@ namespace WillFootballRuinMyDay
 
             if (fixtures != null)
             {
-                fixtures = _fixtureHelpers.LimitToHomeTeam(fixtures, TeamName);
                 for (var i = 0; i < fixtures.Count; i++)
                 {
                     _fixturesArray[i] = fixtures[i];
