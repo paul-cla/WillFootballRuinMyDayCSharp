@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Linq;
 using Android.App;
 using Android.Content;
 using Android.Os;
@@ -11,16 +10,12 @@ using Exception = System.Exception;
 [assembly: Application("Will Football Ruin My Day?", Icon = "Icon")]
 [assembly: UsesPermission(Android.Manifest.Permission.INTERNET)]
 
-namespace AirportInfo
+namespace WillFootballRuinMyDay
 {
     [Activity]
     public class MainActivity : Activity
     {
-        private static readonly string[] AirportCodes = new[] { "AMA", "ASE", "BOS", "CLE", "CVG", "DAY", "DCA", "EYW", "IAH", "IND", "LAS", 
-            "MKE", "MSY", "OAK", "ORD", "PDX", "PNS", "SFO", "SNA", "TRI" };
-
-        private CodeAndName[] airports;
-        private ListView codeList;
+        private ListView fixtureList;
 
         /// <summary>
         /// Initialize activity
@@ -29,32 +24,30 @@ namespace AirportInfo
         {
             base.OnCreate(savedInstance);
             SetContentView(R.Layouts.MainLayout);
-            airports = AirportCodes.Select(x => new CodeAndName(x)).ToArray();
 
-            codeList = FindViewById<ListView>(R.Ids.codeList);
-            codeList.Adapter = new ArrayAdapter<CodeAndName>(this, Android.R.Layout.Simple_list_item_1, airports);
-            codeList.ItemClick += OnAirportClick;
+            fixtureList = FindViewById<ListView>(R.Ids.codeList);
+            //fixtureList.Adapter = new ArrayAdapter<CodeAndName>(this, Android.R.Layout.Simple_list_item_1, airports);
+            fixtureList.ItemClick += OnAirportClick;
 
             // Now get the names of all airports
             var worker = new BackgroundWorker();
-            worker.DoWork += OnGetNames;
+            worker.DoWork += OnGetFixtures;
             worker.RunWorkerAsync();
         }
 
         /// <summary>
         /// Lookup all airport names
         /// </summary>
-        private void OnGetNames(object sender, DoWorkEventArgs doWorkEventArgs)
+        private void OnGetFixtures(object sender, DoWorkEventArgs doWorkEventArgs)
         {
-            var updater = new ListViewUpdater(codeList);
-            foreach (var entry in airports)
-            {
+            var updater = new ListViewUpdater(fixtureList);
+           
                 try
                 {
-                    var status = AirportService.GetStatus(entry.Code);
+                    var status = FootballService.GetFixtures(66);
                     if (status != null)
                     {
-                        entry.Name = status.Name;
+                       // entry.Name = status.Name;
                         updater.Post();                        
                     }
                 }
@@ -62,7 +55,7 @@ namespace AirportInfo
                 {
                     // Ignore
                 }
-            }
+            
         }
 
         /// <summary>
@@ -71,7 +64,7 @@ namespace AirportInfo
         private void OnAirportClick(object sender, ItemClickEventArgs e)
         {
             var intent = new Intent(this, typeof (StatusActivity));
-            intent.PutExtra("code", airports[e.Position].Code);
+            //intent.PutExtra("code", airports[e.Position].Code);
             StartActivity(intent);
         }
 

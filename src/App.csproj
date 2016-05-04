@@ -12,17 +12,20 @@
     <RootNamespace>AirportInfo</RootNamespace>
     <AssemblyName>AirportInfo</AssemblyName>
     <TargetFrameworkIdentifier>Android</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v2.3.3</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
     <AndroidVersion>$(TargetFrameworkVersion)</AndroidVersion>
-    <SupportedCultures></SupportedCultures>
+    <SupportedCultures>
+    </SupportedCultures>
     <ApkOutputs>true</ApkOutputs>
     <GenerateAndroidManifest>true</GenerateAndroidManifest>
-    <ApkFilename>AirportInfo.apk</ApkFilename>
-    <PackageName>com.dot42.samples.AirportInfo</PackageName>
+    <ApkFilename>Will Football Ruin My Day.apk</ApkFilename>
+    <PackageName>com.clarkin.WillFootballRuinMyDay</PackageName>
     <Dot42ExtensionsPath Condition=" '$(Dot42ExtensionsPath)' == '' ">$(Registry:HKEY_CURRENT_USER\SOFTWARE\TallApplications\Dot42@ExtensionsPath)</Dot42ExtensionsPath>
     <Dot42ExtensionsPath Condition=" '$(Dot42ExtensionsPath)' == '' ">$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\TallApplications\Dot42@ExtensionsPath)</Dot42ExtensionsPath>
     <ApkCertificatePath>..\..\Samples.pfx</ApkCertificatePath>
     <ApkCertificateThumbprint>DB72C0A8DE6E716F660ABEB0802F932CC061F891</ApkCertificateThumbprint>
+    <TargetSdkAndroidVersion />
+    <GenerateWcfProxy>false</GenerateWcfProxy>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,6 +56,8 @@
   <ItemGroup>
     <Compile Include="AirportService.cs" />
     <Compile Include="AirportStatus.cs" />
+    <Compile Include="UpcomingFixtures.cs" />
+    <Compile Include="FootballService.cs" />
     <Compile Include="StatusActivity.cs" />
     <Compile Include="MainActivity.cs" />
   </ItemGroup>
@@ -71,7 +76,9 @@
     <DrawableResource Include="Icons\Icon-ldpi.png" />
     <DrawableResource Include="Icons\Icon-mdpi.png" />
   </ItemGroup>
-  <Target Name="BeforeBuild"></Target>
-  <Target Name="AfterBuild" DependsOnTargets="$(AfterBuildDependsOn)"></Target>
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild" DependsOnTargets="$(AfterBuildDependsOn)">
+  </Target>
   <ProjectExtensions />
 </Project>
